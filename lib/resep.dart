@@ -50,7 +50,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
 
     try {
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/user/check-fav-recipe/${widget.recipeId}?userId=$userId'),
+        Uri.parse('https://resepku-production.up.railway.app/user/check-fav-recipe/${widget.recipeId}?userId=$userId'),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -94,8 +94,8 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     }
 
     final url = _isFavorited
-        ? 'http://10.0.2.2:3000/user/unfav-recipee/${widget.recipeId}?userId=$userId'
-        : 'http://10.0.2.2:3000/user/fav-recipe';
+        ? 'https://resepku-production.up.railway.app/user/unfav-recipee/${widget.recipeId}?userId=$userId'
+        : 'https://resepku-production.up.railway.app/user/fav-recipe';
 
     final method = _isFavorited ? 'DELETE' : 'POST';
     final body = _isFavorited ? null : jsonEncode({'userId': userId, 'resepId': widget.recipeId});

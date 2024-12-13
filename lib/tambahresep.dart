@@ -103,7 +103,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/addRecipe'),
+        Uri.parse('https://resepku-production.up.railway.app/addRecipe'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -133,7 +133,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
-    final uri = Uri.parse('http://10.0.2.2:3000/upload-recipe-image');
+    final uri = Uri.parse('https://resepku-production.up.railway.app/upload-recipe-image');
     final request = http.MultipartRequest('POST', uri);
     request.headers['Authorization'] = 'Bearer $token';
     request.files.add(await http.MultipartFile.fromPath('recipeImage', image.path));

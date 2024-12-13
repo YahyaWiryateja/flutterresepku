@@ -53,7 +53,7 @@ class _EditResepPageState extends State<EditResepPage> {
     }
 
     final response = await http.get(
-      Uri.parse('http://10.0.2.2:3000/user/recipe-detail/own/${widget.recipeId}'),
+      Uri.parse('https://resepku-production.up.railway.app/user/recipe-detail/own/${widget.recipeId}'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -133,7 +133,7 @@ class _EditResepPageState extends State<EditResepPage> {
 
     var request = http.MultipartRequest(
       'PUT',
-      Uri.parse('http://10.0.2.2:3000/editRecipe/${widget.recipeId}'),
+      Uri.parse('https://resepku-production.up.railway.app/editRecipe/${widget.recipeId}'),
     );
 
     request.headers['Authorization'] = 'Bearer $token';
@@ -295,7 +295,7 @@ class _EditResepPageState extends State<EditResepPage> {
                 )
               : _existingImagePath != null
                   ? DecorationImage(
-                      image: NetworkImage('http://10.0.2.2:3000/uploads/$_existingImagePath'),
+                      image: NetworkImage('https://resepku-production.up.railway.app/uploads/$_existingImagePath'),
                       fit: BoxFit.cover,
                     )
                   : null,

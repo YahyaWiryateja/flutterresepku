@@ -34,7 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
       final token = prefs.getString('token');
 
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/profile'),
+        Uri.parse('https://resepku-production.up.railway.app/profile'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -62,7 +62,7 @@ class _ProfilePageState extends State<ProfilePage> {
       final token = prefs.getString('token');
 
       final response = await http.put(
-        Uri.parse('http://10.0.2.2:3000/profile'),
+        Uri.parse('https://resepku-production.up.railway.app/profile'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -111,7 +111,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('http://10.0.2.2:3000/upload-profile-picture'),
+        Uri.parse('https://resepku-production.up.railway.app/upload-profile-picture'),
       );
       request.headers['Authorization'] = 'Bearer $token';
       request.files.add(await http.MultipartFile.fromPath(
@@ -211,7 +211,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ? FileImage(_selectedImage!)
                               : (_userProfile['profile_picture'] != null
                                   ? NetworkImage(
-                                      'http://10.0.2.2:3000/${_userProfile['profile_picture']}',
+                                      'https://resepku-production.up.railway.app/${_userProfile['profile_picture']}',
                                     )
                                   : const AssetImage(
                                           'assets/images/Profile.png')

@@ -38,7 +38,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/register') ,
+        Uri.parse('https://resepku-production.up.railway.app/register') ,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'username': username,

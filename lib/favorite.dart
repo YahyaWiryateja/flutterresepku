@@ -48,11 +48,11 @@ class _FavoritePageState extends State<FavoritePage> {
     try {
       String endpoint;
       if (category == 'Resepmu') {
-        endpoint = 'http://10.0.2.2:3000/user/own-recipes';
+        endpoint = 'https://resepku-production.up.railway.app/user/own-recipes';
       } else if (category == 'Tersimpan') {
-        endpoint = 'http://10.0.2.2:3000/user/favorite-recipes';
+        endpoint = 'https://resepku-production.up.railway.app/user/favorite-recipes';
       } else if (category == 'Diterbitkan') {
-        endpoint = 'http://10.0.2.2:3000/user/published-recipes';
+        endpoint = 'https://resepku-production.up.railway.app/user/published-recipes';
       } else {
         return;
       }
@@ -231,7 +231,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(15),
                                         child: Image.network(
-                                          'http://10.0.2.2:3000/uploads/${recipe['imagePath']}',
+                                          'https://resepku-production.up.railway.app/uploads/${recipe['imagePath']}',
                                           height: 120,
                                           width: double.infinity,
                                           fit: BoxFit.cover,

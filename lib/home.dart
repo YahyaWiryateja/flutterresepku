@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'search.dart'; 
 import 'add.dart'; 
 import 'favorite.dart'; 
 import 'profile.dart'; 
 import 'resep.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -81,6 +81,7 @@ class _HomeContentState extends State<HomeContent> {
   List<Map<String, dynamic>> _recipes = [];
   bool _isLoading = true;
   int? _currentUserId;
+  String _sortOrder = 'newest';
 
   @override
   void initState() {
@@ -97,7 +98,7 @@ class _HomeContentState extends State<HomeContent> {
     try {
       // Kirim pencarian ke backend
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/recipes?search=$searchKeyword'),
+        Uri.parse('https://resepku-production.up.railway.app/recipes?search=$searchKeyword'),
       );
 
       if (response.statusCode == 200) {
@@ -118,6 +119,14 @@ class _HomeContentState extends State<HomeContent> {
               'userId': item['user_id'],
             };
           }).toList();
+
+          // Sort recipes based on _sortOrder
+          if (_sortOrder == 'newest') {
+            _recipes.sort((a, b) => b['id'].compareTo(a['id']));
+          } else if (_sortOrder == 'oldest') {
+            _recipes.sort((a, b) => a['id'].compareTo(b['id']));
+          }
+
           _isLoading = false;
         });
       } else {
@@ -133,7 +142,39 @@ class _HomeContentState extends State<HomeContent> {
     }
   }
 
-
+  void _showSortingOptions() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.grey[900],
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: const Text('Terbaru', style: TextStyle(color: Colors.white)),
+              onTap: () {
+                setState(() {
+                  _sortOrder = 'newest';
+                  _fetchAllRecipes(); // Reload recipes
+                });
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Terlama', style: TextStyle(color: Colors.white)),
+              onTap: () {
+                setState(() {
+                  _sortOrder = 'oldest';
+                  _fetchAllRecipes(); // Reload recipes
+                });
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<void> _fetchCurrentUserId() async {
     final prefs = await SharedPreferences.getInstance();
@@ -141,7 +182,6 @@ class _HomeContentState extends State<HomeContent> {
       _currentUserId = prefs.getInt('currentUserId');
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -181,11 +221,14 @@ class _HomeContentState extends State<HomeContent> {
                   ),
                 ),
                 const SizedBox(width: 10),
-                const Icon(
-                  Icons.tune,
-                  color: Colors.white,
-                  size: 28,
-                ),
+                GestureDetector(
+                  onTap: _showSortingOptions,
+                  child: const Icon(
+                    Icons.tune,
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                )
               ],
             ),
             const SizedBox(height: 20),
@@ -226,13 +269,13 @@ class _HomeContentState extends State<HomeContent> {
                                     builder: (context) => RecipeDetailPage(
                                       title: recipe['title'],
                                       author: recipe['author'],
-                                      imageUrl: 'http://10.0.2.2:3000/uploads/${recipe['imagePath']}',
+                                      imageUrl: 'https://resepku-production.up.railway.app/uploads/${recipe['imagePath']}',
                                       cookTime: recipe['cookTime'],
                                       ingredients: recipe['ingredients'],
                                       steps: recipe['steps'],
-                                      recipeAuthorId: recipe['userId'], // Assuming you add this to your recipe data
+                                      recipeAuthorId: recipe['userId'],
                                       currentUserId: _currentUserId ?? 0,
-                                      recipeId: recipe['id'], // You'll need to manage this in your login/state management
+                                      recipeId: recipe['id'],
                                     ),
                                   ),
                                 );
@@ -240,7 +283,7 @@ class _HomeContentState extends State<HomeContent> {
                               child: RecipeCard(
                                 title: recipe['title'],
                                 timeAgo: recipe['cookTime'],
-                                imageUrl: 'http://10.0.2.2:3000/uploads/${recipe['imagePath']}',
+                                imageUrl: 'https://resepku-production.up.railway.app/uploads/${recipe['imagePath']}',
                                 author: recipe['author'],
                               ),
                             );
@@ -340,5 +383,3 @@ class RecipeCard extends StatelessWidget {
     );
   }
 }
-
-
