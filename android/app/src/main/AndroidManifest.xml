@@ -7,7 +7,7 @@
 
 
         <application
-            android:label="Resepku"
+            android:label="Myresep"
             android:name="${applicationName}"
             android:icon="@mipmap/ic_launcher">
             

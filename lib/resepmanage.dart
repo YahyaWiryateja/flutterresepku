@@ -539,7 +539,7 @@ class _ResepManagePageState extends State<ResepManagePage> {
                                     color: Colors.grey, size: 16),
                                 const SizedBox(width: 4),
                                 Text(
-                                  '${_recipeDetails!['cook_time']} mins',
+                                  '${_recipeDetails!['cook_time']}',
                                   style: const TextStyle(
                                       color: Colors.grey, fontSize: 14),
                                 ),

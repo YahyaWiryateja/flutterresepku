@@ -251,7 +251,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                             ),
                                             const SizedBox(height: 5),
                                             Text(
-                                              'Cook Time: ${recipe['cookTime']} min',
+                                              'Cook Time: ${recipe['cookTime']}',
                                               style: const TextStyle(
                                                 color: Colors.white70,
                                                 fontSize: 12,

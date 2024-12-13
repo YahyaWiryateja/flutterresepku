@@ -192,76 +192,81 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
+      resizeToAvoidBottomInset: true, // Untuk menghindari overflow
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  const SizedBox(height: 20),
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      CircleAvatar(
-                        radius: 50,
-                        backgroundImage: _selectedImage != null
-                            ? FileImage(_selectedImage!)
-                            : (_userProfile['profile_picture'] != null
-                                ? NetworkImage(
-                                    'http://10.0.2.2:3000/${_userProfile['profile_picture']}')
-                                : const AssetImage(
-                                        'assets/images/Profile.png')
-                                    as ImageProvider),
-                        child: _isEditing
-                            ? Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.white,
-                                  radius: 18,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.camera_alt,
-                                        size: 18, color: Colors.black),
-                                    onPressed: _pickImage,
+        child: SingleChildScrollView( // Tambahkan ScrollView di sekitar konten
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundImage: _selectedImage != null
+                              ? FileImage(_selectedImage!)
+                              : (_userProfile['profile_picture'] != null
+                                  ? NetworkImage(
+                                      'http://10.0.2.2:3000/${_userProfile['profile_picture']}',
+                                    )
+                                  : const AssetImage(
+                                          'assets/images/Profile.png')
+                                      as ImageProvider),
+                          child: _isEditing
+                              ? Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.white,
+                                    radius: 18,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.camera_alt,
+                                          size: 18, color: Colors.black),
+                                      onPressed: _pickImage,
+                                    ),
                                   ),
-                                ),
-                              )
-                            : null,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  _buildProfileField('Nama', _usernameController, _isEditing),
-                  _buildProfileField('ID Cookpad', _idCookpadController, _isEditing),
-                  _buildProfileField('Email', _emailController, _isEditing),
-                  const SizedBox(height: 20),
-                  _isEditing
-                      ? ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            foregroundColor: Colors.white,
-                          ),
-                          onPressed: _updateProfile,
-                          child: const Text('Simpan'),
-                        )
-                      : Container(), // No "Edit Profile" button here
-                ],
-              ),
-              Positioned(
-                right: 16,
-                top: 16,
-                child: IconButton(
-                  icon: const Icon(Icons.settings, color: Colors.white),
-                  onPressed: _showProfileOptions,
+                                )
+                              : null,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    _buildProfileField('Nama', _usernameController, _isEditing),
+                    _buildProfileField('ID Cookpad', _idCookpadController, _isEditing),
+                    _buildProfileField('Email', _emailController, _isEditing),
+                    const SizedBox(height: 20),
+                    _isEditing
+                        ? ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              foregroundColor: Colors.white,
+                            ),
+                            onPressed: _updateProfile,
+                            child: const Text('Simpan'),
+                          )
+                        : Container(), // No "Edit Profile" button here
+                  ],
                 ),
-              ),
-            ],
+                Positioned(
+                  right: 16,
+                  top: 16,
+                  child: IconButton(
+                    icon: const Icon(Icons.settings, color: Colors.white),
+                    onPressed: _showProfileOptions,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
 
   Widget _buildProfileField(
     String label,

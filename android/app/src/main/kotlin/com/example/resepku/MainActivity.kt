@@ -1,4 +1,4 @@
-package com.example.resepku
+package com.mrp.Myresep
 
 import io.flutter.embedding.android.FlutterActivity
 

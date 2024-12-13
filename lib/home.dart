@@ -112,7 +112,7 @@ class _HomeContentState extends State<HomeContent> {
               'title': item['title'],
               'imagePath': item['image_path'],
               'author': item['username'],
-              'cookTime': '${item['cook_time']} mins',
+              'cookTime': '${item['cook_time']}',
               'ingredients': ingredientsList,
               'steps': stepsList,
               'userId': item['user_id'],

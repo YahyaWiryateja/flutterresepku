@@ -248,7 +248,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
               _buildTextField(_servingsController, '2 orang', false),
               const SizedBox(height: 16),
               _buildSectionTitle('Lama Memasak'),
-              _buildTextField(_cookTimeController, '3 Jam', false),
+              _buildTextField(_cookTimeController, '1 Jam 30 menit', false),
               const SizedBox(height: 16),
               _buildSectionTitle('Bahan-bahan'),
               ..._buildIngredientFields(),
@@ -392,3 +392,5 @@ class _AddRecipePageState extends State<AddRecipePage> {
     });
   }
 }
+
+

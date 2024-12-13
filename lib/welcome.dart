@@ -21,7 +21,7 @@ class WelcomeScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('assets/images/logodepan.png', height: 150),
+                Image.asset('assets/images/MYRESEP_logo.png', height: 150),
                 const SizedBox(height: 40), // Spasi di antara logo dan tombol
                 SizedBox(
                   width: double.infinity, // Memastikan tombol menyesuaikan lebar
