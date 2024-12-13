@@ -64,6 +64,8 @@ class _FavoritePageState extends State<FavoritePage> {
                 'id': item['id'],
                 'title': item['title'],
                 'imagePath': item['image_path'],
+                'cookTime': item['cook_time'], // Tambahkan cook time
+                'author': item['author'], // Tambah
                 'source': category,
               }).toList();
           _isLoading = false;
@@ -241,7 +243,15 @@ class _FavoritePageState extends State<FavoritePage> {
                                             ),
                                             const SizedBox(height: 5),
                                             Text(
-                                              recipe['source'],
+                                              'By: ${recipe['author']}',
+                                              style: const TextStyle(
+                                                color: Colors.white70,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 5),
+                                            Text(
+                                              'Cook Time: ${recipe['cookTime']} min',
                                               style: const TextStyle(
                                                 color: Colors.white70,
                                                 fontSize: 12,

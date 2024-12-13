@@ -336,7 +336,7 @@ class _EditResepPageState extends State<EditResepPage> {
               ],
             ),
           );
-        }).toList(),
+        }),
         TextButton.icon(
           onPressed: () {
             setState(() {
@@ -396,7 +396,7 @@ class _EditResepPageState extends State<EditResepPage> {
               ],
             ),
           );
-        }).toList(),
+        }),
         TextButton.icon(
           onPressed: () {
             setState(() {

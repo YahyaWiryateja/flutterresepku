@@ -175,11 +175,11 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               ElevatedButton(
                 onPressed: _logout,
-                child: const Text('Logout'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
                 ),
+                child: const Text('Logout'),
               ),
             ],
           ),

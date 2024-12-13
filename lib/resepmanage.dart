@@ -17,7 +17,7 @@ class ResepManagePage extends StatefulWidget {
 class _ResepManagePageState extends State<ResepManagePage> {
   Map<String, dynamic>? _recipeDetails;
   bool _isLoading = true;
-  bool _isFavorite = false;
+  final bool _isFavorite = false;
 
   @override
   void initState() {
@@ -219,13 +219,6 @@ class _ResepManagePageState extends State<ResepManagePage> {
     }
   }
 
-
-  
-
-
-
-
-
   void _showMoreOptions() {
     showModalBottomSheet(
       context: context,
@@ -237,23 +230,71 @@ class _ResepManagePageState extends State<ResepManagePage> {
               leading: const Icon(Icons.share),
               title: const Text('Bagikan'),
               onTap: () {
-                _shareRecipe();
-                Navigator.pop(context);
+                // Menampilkan dialog konfirmasi untuk bagikan resep
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text('Konfirmasi'),
+                      content: const Text('Apakah Anda ingin membagikan resep ini?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context); // Menutup dialog
+                          },
+                          child: const Text('Tidak'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            _shareRecipe(); // Menjalankan fungsi untuk membagikan resep
+                            Navigator.pop(context); // Menutup dialog
+                            Navigator.pop(context); // Menutup bottom sheet
+                          },
+                          child: const Text('Ya'),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             ),
             ListTile(
               leading: const Icon(Icons.delete),
               title: const Text('Hapus Resep'),
               onTap: () {
-                _deleteRecipe();
-                Navigator.pop(context);
+                // Menampilkan dialog konfirmasi untuk hapus resep
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text('Konfirmasi'),
+                      content: const Text('Apakah Anda yakin ingin menghapus resep ini?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context); // Menutup dialog
+                          },
+                          child: const Text('Tidak'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            _deleteRecipe(); // Menjalankan fungsi untuk menghapus resep
+                            Navigator.pop(context); // Menutup dialog
+                            Navigator.pop(context); // Menutup bottom sheet
+                          },
+                          child: const Text('Ya'),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             ),
             ListTile(
               leading: const Icon(Icons.edit),
               title: const Text('Edit'),
               onTap: () {
-                Navigator.pop(context);  // Close the bottom sheet
+                Navigator.pop(context); // Menutup bottom sheet
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -280,8 +321,34 @@ class _ResepManagePageState extends State<ResepManagePage> {
               leading: const Icon(Icons.stop_circle),
               title: const Text('Berhenti Bagikan'),
               onTap: () {
-                 _unshareRecipe();
-                Navigator.pop(context);
+                // Menampilkan dialog konfirmasi
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text('Konfirmasi'),
+                      content: const Text('Apakah Anda ingin berhenti membagikan resep?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            // Menutup dialog dan tidak melakukan apa-apa
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Tidak'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            // Menutup dialog dan memanggil _unshareRecipe
+                            _unshareRecipe();
+                            Navigator.pop(context); // Menutup dialog
+                            Navigator.pop(context); // Menutup bottom sheet
+                          },
+                          child: const Text('Ya'),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             ),
           ],
@@ -289,6 +356,7 @@ class _ResepManagePageState extends State<ResepManagePage> {
       },
     );
   }
+
 
   List<Widget> _buildIngredientsList() {
     if (_recipeDetails == null || _recipeDetails!['ingredients'] == null) {
@@ -423,7 +491,28 @@ class _ResepManagePageState extends State<ResepManagePage> {
                                   : Icons.bookmark,
                               color: Colors.white,
                             ),
-                            onPressed: _unfavRecipe,
+                            onPressed: () async {
+                              bool? confirmUnfavorite = await showDialog<bool>(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Hapus dari Favorit'),
+                                  content: const Text('Anda yakin ingin menghapus resep ini dari favorit?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.of(context).pop(false),
+                                      child: const Text('Tidak'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () => Navigator.of(context).pop(true),
+                                      child: const Text('Ya'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                              if (confirmUnfavorite == true) {
+                                _unfavRecipe();
+                              }
+                            },
                           ),
                         if (widget.source == 'Diterbitkan')
                           IconButton(

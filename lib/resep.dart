@@ -219,7 +219,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  ...widget.ingredients.map((ingredient) => _buildIngredientItem(ingredient)).toList(),
+                  ...widget.ingredients.map((ingredient) => _buildIngredientItem(ingredient)),
                   const SizedBox(height: 16),
                   const Text(
                     'Langkah-langkah',
@@ -234,7 +234,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                     final index = entry.key + 1;
                     final step = entry.value;
                     return _buildStepItem(index, step);
-                  }).toList(),
+                  }),
                 ],
               ),
             ),
