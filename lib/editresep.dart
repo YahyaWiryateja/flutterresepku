@@ -67,7 +67,6 @@ class _EditResepPageState extends State<EditResepPage> {
         _cookTime = recipeDetails['cook_time']?.toString() ?? '';
         _existingImagePath = recipeDetails['image_path'];
 
-        // Populate ingredients and steps
         final ingredients = jsonDecode(recipeDetails['ingredients']) as List;
         _ingredientControllers.addAll(
           ingredients.map((ingredient) => TextEditingController(text: ingredient)),
@@ -90,6 +89,34 @@ class _EditResepPageState extends State<EditResepPage> {
   }
 
   Future<void> _updateRecipe() async {
+    if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields')),
+      );
+      return;
+    }
+
+    if (_ingredientControllers.isEmpty || _ingredientControllers.any((c) => c.text.isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('All ingredients must be filled in')),
+      );
+      return;
+    }
+
+    if (_stepControllers.isEmpty || _stepControllers.any((c) => c.text.isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('All steps must be filled in')),
+      );
+      return;
+    }
+
+    if (_imageFile == null && _existingImagePath == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please add a recipe image')),
+      );
+      return;
+    }
+
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
@@ -104,16 +131,12 @@ class _EditResepPageState extends State<EditResepPage> {
       _isLoading = true;
     });
 
-    // Prepare the request
     var request = http.MultipartRequest(
       'PUT',
-      Uri.parse('http://10.0.2.2:3000/editRecipe/${widget.recipeId}')
+      Uri.parse('http://10.0.2.2:3000/editRecipe/${widget.recipeId}'),
     );
 
-    // Add headers
     request.headers['Authorization'] = 'Bearer $token';
-
-    // Add text fields
     request.fields['title'] = _title;
     request.fields['servings'] = _servings;
     request.fields['cookTime'] = _cookTime;
@@ -124,21 +147,15 @@ class _EditResepPageState extends State<EditResepPage> {
       _stepControllers.map((c) => c.text).toList(),
     );
 
-    // Add image if selected
-    // Tambahkan existingImagePath
-    if (_existingImagePath != null) {
-      request.fields['existingImagePath'] = _existingImagePath!;
-    }
-
-    // Tambahkan image baru jika ada
     if (_imageFile != null) {
       request.files.add(await http.MultipartFile.fromPath(
         'image',
         _imageFile!.path,
       ));
+    } else if (_existingImagePath != null) {
+      request.fields['existingImagePath'] = _existingImagePath!;
     }
 
-    // Send the request
     try {
       final response = await request.send();
       final responseBody = await response.stream.bytesToString();
@@ -151,7 +168,7 @@ class _EditResepPageState extends State<EditResepPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Recipe updated successfully')),
         );
-        Navigator.pop(context);
+        Navigator.pop(context, true);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to update recipe: $responseBody')),
@@ -167,72 +184,99 @@ class _EditResepPageState extends State<EditResepPage> {
     }
   }
 
+
+  Future<bool> _onWillPop() async {
+    return await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Konfirmasi'),
+            content: const Text('Apakah Anda ingin keluar dari halaman ini?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Tidak'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Ya'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
         backgroundColor: Colors.black,
-        title: const Text(
-          'Edit Resep',
-          style: TextStyle(color: Colors.white),
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          title: const Text(
+            'Edit Resep',
+            style: TextStyle(color: Colors.white),
+          ),
+          iconTheme: const IconThemeData(color: Colors.white),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _buildPhotoSection(),
-                      const SizedBox(height: 16),
-                      _buildSectionTitle('Judul Resep'),
-                      const SizedBox(height: 8),
-                      _buildTextFieldNoLabel(_title, (value) => _title = value),
-                      const SizedBox(height: 16),
-                      _buildSectionTitle('Porsi'),
-                      const SizedBox(height: 8),
-                      _buildTextFieldNoLabel(_servings, (value) => _servings = value),
-                      const SizedBox(height: 16),
-                      _buildSectionTitle('Waktu Memasak'),
-                      const SizedBox(height: 8),
-                      _buildTextFieldNoLabel(_cookTime, (value) => _cookTime = value),
-                      const SizedBox(height: 24),
-                      _buildDynamicFields('Bahan-bahan', _ingredientControllers, 'Tambah Bahan'),
-                      const SizedBox(height: 24),
-                      _buildDynamicSteps('Langkah Memasak', _stepControllers, 'Tambah Langkah'),
-                      const SizedBox(height: 24),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState?.validate() ?? false) {
-                            _updateRecipe();
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+        body: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _buildPhotoSection(),
+                        const SizedBox(height: 16),
+                        _buildSectionTitle('Judul Resep'),
+                        const SizedBox(height: 8),
+                        _buildTextFieldNoLabel(_title, (value) => _title = value),
+                        const SizedBox(height: 16),
+                        _buildSectionTitle('Porsi'),
+                        const SizedBox(height: 8),
+                        _buildTextFieldNoLabel(_servings, (value) => _servings = value),
+                        const SizedBox(height: 16),
+                        _buildSectionTitle('Waktu Memasak'),
+                        const SizedBox(height: 8),
+                        _buildTextFieldNoLabel(_cookTime, (value) => _cookTime = value),
+                        const SizedBox(height: 24),
+                        _buildDynamicFields(
+                            'Bahan-bahan', _ingredientControllers, 'Tambah Bahan'),
+                        const SizedBox(height: 24),
+                        _buildDynamicSteps(
+                            'Langkah Memasak', _stepControllers, 'Tambah Langkah'),
+                        const SizedBox(height: 24),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              _updateRecipe();
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text(
+                            'Simpan Perubahan',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                        child: const Text(
-                          'Simpan Perubahan',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
+      ),
     );
   }
 
@@ -257,14 +301,14 @@ class _EditResepPageState extends State<EditResepPage> {
                   : null,
         ),
         child: _imageFile == null && _existingImagePath == null
-          ? const Center(
-              child: Icon(
-                Icons.camera_enhance_outlined,
-                color: Colors.white,
-                size: 40,
-              ),
-            )
-          : null,
+            ? const Center(
+                child: Icon(
+                  Icons.camera_enhance_outlined,
+                  color: Colors.white,
+                  size: 40,
+                ),
+              )
+            : null,
       ),
     );
   }
@@ -293,6 +337,12 @@ class _EditResepPageState extends State<EditResepPage> {
         ),
       ),
       onChanged: onChanged,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Field ini tidak boleh kosong';
+        }
+        return null;
+      },
     );
   }
 
@@ -323,6 +373,12 @@ class _EditResepPageState extends State<EditResepPage> {
                         borderSide: BorderSide.none,
                       ),
                     ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Field ini tidak boleh kosong';
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 IconButton(
@@ -336,7 +392,7 @@ class _EditResepPageState extends State<EditResepPage> {
               ],
             ),
           );
-        }),
+        }).toList(),
         TextButton.icon(
           onPressed: () {
             setState(() {
@@ -383,6 +439,12 @@ class _EditResepPageState extends State<EditResepPage> {
                         borderSide: BorderSide.none,
                       ),
                     ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Field ini tidak boleh kosong';
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 IconButton(
@@ -396,7 +458,7 @@ class _EditResepPageState extends State<EditResepPage> {
               ],
             ),
           );
-        }),
+        }).toList(),
         TextButton.icon(
           onPressed: () {
             setState(() {

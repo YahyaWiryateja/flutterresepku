@@ -112,7 +112,7 @@ class _HomeContentState extends State<HomeContent> {
               'title': item['title'],
               'imagePath': item['image_path'],
               'author': item['username'],
-              'cookTime': '${item['cook_time']}',
+              'cookTime': 'Cook Time : ${item['cook_time']}',
               'ingredients': ingredientsList,
               'steps': stepsList,
               'userId': item['user_id'],
@@ -242,9 +242,6 @@ class _HomeContentState extends State<HomeContent> {
                                 timeAgo: recipe['cookTime'],
                                 imageUrl: 'http://10.0.2.2:3000/uploads/${recipe['imagePath']}',
                                 author: recipe['author'],
-                                likes: 0, // Default atau bisa tambahkan field
-                                hearts: 0,
-                                claps: 0,
                               ),
                             );
                           },
@@ -263,9 +260,6 @@ class RecipeCard extends StatelessWidget {
   final String timeAgo;
   final String imageUrl;
   final String author;
-  final int likes;
-  final int hearts;
-  final int claps;
 
   const RecipeCard({
     super.key,
@@ -273,9 +267,6 @@ class RecipeCard extends StatelessWidget {
     required this.timeAgo,
     required this.imageUrl,
     required this.author,
-    required this.likes,
-    required this.hearts,
-    required this.claps,
   });
 
   @override
@@ -286,11 +277,15 @@ class RecipeCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Bagian gambar
           ClipRRect(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(15),
+              topRight: Radius.circular(15),
+            ),
             child: Image.network(
               imageUrl,
-              height: 120,
+              height: 140,
               width: double.infinity,
               fit: BoxFit.cover,
             ),
@@ -300,22 +295,44 @@ class RecipeCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Author
                 Text(
                   author,
-                  style: const TextStyle(color: Colors.white70, fontSize: 12),
+                  style: const TextStyle(
+                    color: Colors.orange,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 5),
+                // Judul dengan ukuran lebih besar
                 Text(
                   title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  timeAgo,
-                  style: const TextStyle(color: Colors.white54, fontSize: 10),
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
+            ),
+          ),
+          // Spacer untuk memberikan ruang fleksibel
+          Expanded(
+            flex: 2, // Semakin tinggi angkanya, semakin besar ruang yang diberikan
+            child: Container(),
+          ),
+          // Bagian cook time di bawah
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+            child: Text(
+              timeAgo,
+              style: const TextStyle(
+                color: Colors.white60,
+                fontSize: 12,
+              ),
             ),
           ),
         ],
@@ -323,3 +340,5 @@ class RecipeCard extends StatelessWidget {
     );
   }
 }
+
+

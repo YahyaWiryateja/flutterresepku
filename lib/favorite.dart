@@ -25,6 +25,13 @@ class _FavoritePageState extends State<FavoritePage> {
     _fetchRecipesByCategory(_selectedCategory);
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Cek apakah kembali dari halaman lain
+    ModalRoute.of(context)?.settings.name == null ? _fetchRecipesByCategory(_selectedCategory) : null;
+  }
+
   Future<void> _fetchRecipesByCategory(String category) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -204,11 +211,14 @@ class _FavoritePageState extends State<FavoritePage> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => ResepManagePage(
-                                        id: recipe['id'] ?? 4, // Pass the recipe ID
+                                        id: recipe['id'],
                                         source: _selectedCategory,
                                       ),
                                     ),
-                                  );
+                                  ).then((_) {
+                                    // Refresh data saat kembali
+                                    _fetchRecipesByCategory(_selectedCategory);
+                                  });
                                 },
                                 child: Card(
                                   color: Colors.grey[900],

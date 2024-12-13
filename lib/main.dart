@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'favorite.dart';
 import 'welcome.dart'; 
 
 void main() {
@@ -18,6 +19,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const WelcomeScreen(), 
+      routes: {
+        '/favorite': (context) => FavoritePage(), // Tambahkan ini
+      },
     );
   }
 }

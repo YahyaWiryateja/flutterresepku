@@ -14,7 +14,7 @@ class ResepManagePage extends StatefulWidget {
   State<ResepManagePage> createState() => _ResepManagePageState();
 }
 
-class _ResepManagePageState extends State<ResepManagePage> {
+class _ResepManagePageState extends State<ResepManagePage> with WidgetsBindingObserver {
   Map<String, dynamic>? _recipeDetails;
   bool _isLoading = true;
   final bool _isFavorite = false;
@@ -22,7 +22,30 @@ class _ResepManagePageState extends State<ResepManagePage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _fetchRecipeDetails();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _fetchRecipeDetails();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Check if this page is being returned to
+    if (ModalRoute.of(context)?.isCurrent ?? false) {
+      _fetchRecipeDetails();
+    }
   }
 
   Future<void> _fetchRecipeDetails() async {
