@@ -21,6 +21,53 @@ class _AddRecipePageState extends State<AddRecipePage> {
   File? _selectedRecipeImage;
 
   Future<void> _saveRecipe() async {
+    // Validasi field wajib
+    if (_titleController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Judul resep harus diisi')),
+      );
+      return;
+    }
+
+    if (_cookTimeController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Lama Memasak resep harus diisi')),
+      );
+      return;
+    }
+
+    if (_servingsController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Porsi Memasak resep harus diisi')),
+      );
+      return;
+    }
+
+    // Validasi bahan
+    if (_ingredientControllers.isEmpty || 
+        _ingredientControllers.every((controller) => controller.text.trim().isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Minimal satu bahan harus diisi')),
+      );
+      return;
+    }
+
+    // Validasi langkah
+    if (_stepControllers.isEmpty || 
+        _stepControllers.every((controller) => controller.text.trim().isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Minimal satu langkah harus diisi')),
+      );
+      return;
+    }
+
+    if (_selectedRecipeImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Foto resep harus ditambahkan')),
+      );
+      return;
+    }
+
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
@@ -51,7 +98,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
     if (_selectedRecipeImage != null) {
       final imagePath = await _uploadRecipeImage(_selectedRecipeImage!);
       if (imagePath == null) return;
-      recipeData['imagePath'] = imagePath; // Tambahkan path gambar
+      recipeData['imagePath'] = imagePath;
     }
 
     try {
@@ -124,7 +171,59 @@ class _AddRecipePageState extends State<AddRecipePage> {
         backgroundColor: Colors.black,
         leading: IconButton(
           icon: const Icon(Icons.close, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            // Check if any field has been filled
+            bool hasFilledFields = _titleController.text.isNotEmpty ||
+                _servingsController.text.isNotEmpty ||
+                _cookTimeController.text.isNotEmpty ||
+                _ingredientControllers.any((controller) => controller.text.isNotEmpty) ||
+                _stepControllers.any((controller) => controller.text.isNotEmpty) ||
+                _selectedRecipeImage != null;
+
+            if (hasFilledFields) {
+              // Show confirmation dialog
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    backgroundColor: Colors.grey[900],
+                    title: Text(
+                      'Keluar dari Halaman', 
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    content: Text(
+                      'Anda yakin ingin keluar dari halaman ini? Perubahan tidak tersimpan',
+                      style: TextStyle(color: Colors.white70),
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text(
+                          'Batal', 
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Dismiss dialog
+                        },
+                      ),
+                      TextButton(
+                        child: const Text(
+                          'Keluar', 
+                          style: TextStyle(color: Colors.orange),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Dismiss dialog
+                          Navigator.of(context).pop(); // Go back to previous screen
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            } else {
+              // If no fields are filled, simply go back
+              Navigator.of(context).pop();
+            }
+          },
         ),
         title: const Text('Buat Resep', style: TextStyle(color: Colors.white)),
         actions: [
@@ -187,7 +286,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
                 children: [
                   Icon(Icons.camera_alt, color: Colors.white, size: 48),
                   SizedBox(height: 8),
-                  Text('[Opsional] Foto Resep', style: TextStyle(color: Colors.white)),
+                  Text('[Wajib] Foto Resep', style: TextStyle(color: Colors.white)),
                   Text('Tambahkan foto akhir masakan', style: TextStyle(color: Colors.grey)),
                 ],
               )
