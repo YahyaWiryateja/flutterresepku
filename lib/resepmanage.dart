@@ -258,14 +258,21 @@ class _ResepManagePageState extends State<ResepManagePage> with WidgetsBindingOb
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: const Text('Konfirmasi'),
-                      content: const Text('Apakah Anda ingin membagikan resep ini?'),
+                      backgroundColor: Colors.grey[900],
+                      title: const Text('Konfirmasi', 
+                      style: TextStyle(color: Colors.white),
+                    ),
+                      content: const Text('Apakah Anda ingin membagikan resep ini?',
+                      style: TextStyle(color: Colors.white70),
+                    ),
                       actions: [
                         TextButton(
                           onPressed: () {
                             Navigator.pop(context); // Menutup dialog
                           },
-                          child: const Text('Tidak'),
+                          child: const Text('Tidak', 
+                          style: TextStyle(color: Colors.white),
+                        ),
                         ),
                         TextButton(
                           onPressed: () {
@@ -273,7 +280,9 @@ class _ResepManagePageState extends State<ResepManagePage> with WidgetsBindingOb
                             Navigator.pop(context); // Menutup dialog
                             Navigator.pop(context); // Menutup bottom sheet
                           },
-                          child: const Text('Ya'),
+                          child: const Text('Ya', 
+                          style: TextStyle(color: Colors.orange),
+                        ),
                         ),
                       ],
                     );
@@ -290,14 +299,21 @@ class _ResepManagePageState extends State<ResepManagePage> with WidgetsBindingOb
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: const Text('Konfirmasi'),
-                      content: const Text('Apakah Anda yakin ingin menghapus resep ini?'),
+                      backgroundColor: Colors.grey[900],
+                      title: const Text('Konfirmasi', 
+                      style: TextStyle(color: Colors.white),
+                    ),
+                      content: const Text('Apakah Anda yakin ingin menghapus resep ini?',
+                      style: TextStyle(color: Colors.white70),
+                    ),
                       actions: [
                         TextButton(
                           onPressed: () {
                             Navigator.pop(context); // Menutup dialog
                           },
-                          child: const Text('Tidak'),
+                          child: const Text('Tidak', 
+                          style: TextStyle(color: Colors.white),
+                        ),
                         ),
                         TextButton(
                           onPressed: () {
@@ -305,7 +321,9 @@ class _ResepManagePageState extends State<ResepManagePage> with WidgetsBindingOb
                             Navigator.pop(context); // Menutup dialog
                             Navigator.pop(context); // Menutup bottom sheet
                           },
-                          child: const Text('Ya'),
+                          child: const Text('Ya', 
+                          style: TextStyle(color: Colors.orange),
+                        ),
                         ),
                       ],
                     );
@@ -349,15 +367,21 @@ class _ResepManagePageState extends State<ResepManagePage> with WidgetsBindingOb
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: const Text('Konfirmasi'),
-                      content: const Text('Apakah Anda ingin berhenti membagikan resep?'),
+                      backgroundColor: Colors.grey[900],
+                      title: const Text('Konfirmasi',style: TextStyle(color: Colors.white),
+                    ),
+                      content: const Text('Apakah Anda ingin berhenti membagikan resep?',
+                      style: TextStyle(color: Colors.white70),
+                    ),
                       actions: [
                         TextButton(
                           onPressed: () {
                             // Menutup dialog dan tidak melakukan apa-apa
                             Navigator.pop(context);
                           },
-                          child: const Text('Tidak'),
+                          child: const Text('Tidak', 
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                         TextButton(
                           onPressed: () {
@@ -366,7 +390,9 @@ class _ResepManagePageState extends State<ResepManagePage> with WidgetsBindingOb
                             Navigator.pop(context); // Menutup dialog
                             Navigator.pop(context); // Menutup bottom sheet
                           },
-                          child: const Text('Ya'),
+                          child: const Text('Ya', 
+                          style: TextStyle(color: Colors.orange),
+                        ),
                         ),
                       ],
                     );
@@ -518,16 +544,23 @@ class _ResepManagePageState extends State<ResepManagePage> with WidgetsBindingOb
                               bool? confirmUnfavorite = await showDialog<bool>(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                  title: const Text('Hapus dari Favorit'),
-                                  content: const Text('Anda yakin ingin menghapus resep ini dari favorit?'),
+                                  backgroundColor: Colors.grey[900],
+                                  title: const Text('Hapus dari Favorit',style: TextStyle(color: Colors.white),
+                                  ),
+                                  content: const Text('Anda yakin ingin menghapus resep ini dari favorit?',
+                                    style: TextStyle(color: Colors.white70),
+                                  ),
                                   actions: [
                                     TextButton(
                                       onPressed: () => Navigator.of(context).pop(false),
-                                      child: const Text('Tidak'),
+                                      child: const Text('Tidak', 
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                     ),
                                     TextButton(
                                       onPressed: () => Navigator.of(context).pop(true),
-                                      child: const Text('Ya'),
+                                      child: const Text('Ya', 
+                                        style: TextStyle(color: Colors.orange),),
                                     ),
                                   ],
                                 ),

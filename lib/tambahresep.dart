@@ -187,11 +187,11 @@ class _AddRecipePageState extends State<AddRecipePage> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     backgroundColor: Colors.grey[900],
-                    title: Text(
+                    title: const Text(
                       'Keluar dari Halaman', 
                       style: TextStyle(color: Colors.white),
                     ),
-                    content: Text(
+                    content: const Text(
                       'Anda yakin ingin keluar dari halaman ini? Perubahan tidak tersimpan',
                       style: TextStyle(color: Colors.white70),
                     ),

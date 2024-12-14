@@ -187,24 +187,28 @@ class _EditResepPageState extends State<EditResepPage> {
 
   Future<bool> _onWillPop() async {
     return await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Konfirmasi'),
-            content: const Text('Apakah Anda ingin keluar dari halaman ini?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('Tidak'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Ya'),
-              ),
-            ],
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.grey[900],
+        title: const Text('Keluar dari Halaman',style: TextStyle(color: Colors.white),),
+        content: const Text(
+          'Apakah Anda ingin keluar dari halaman ini? Perubahan tidak tersimpan',
+          style: TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Batal', style: TextStyle(color: Colors.white)),
           ),
-        ) ??
-        false;
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Keluar', style: TextStyle(color: Colors.orange)),
+          ),
+        ],
+      ),
+    ) ?? false;
   }
+
 
   @override
   Widget build(BuildContext context) {
